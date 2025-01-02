@@ -5,14 +5,11 @@ import com.projet1.demo.entities.PrescriptionEntity;
 import com.projet1.demo.services.MedicalRecordService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-@Controller
+@RestController
 @RequestMapping("/medical")
 public class MedicalRecordController {
 
@@ -23,46 +20,27 @@ public class MedicalRecordController {
         this.medicalRecordService = medicalRecordService;
     }
 
+    // Récupérer toutes les prescriptions pour un patient
     @GetMapping("/patients/{patientId}/prescriptions")
-    public String getPrescriptions(@PathVariable Long patientId, Model model) {
-        List<PrescriptionEntity> prescriptions = medicalRecordService.getPrescriptions(patientId);
-        model.addAttribute("prescriptions", prescriptions);
-        model.addAttribute("patientId", patientId);
-        return "prescriptions";
+    public List<PrescriptionEntity> getPrescriptions(@PathVariable Long patientId) {
+        return medicalRecordService.getPrescriptions(patientId);
     }
 
-    @GetMapping("/patients/{patientId}/prescriptions/new")
-    public String showCreatePrescriptionForm(@PathVariable Long patientId, Model model) {
-        model.addAttribute("patientId", patientId);
-        model.addAttribute("prescription", new PrescriptionEntity());
-        return "create-prescription";
-    }
-
+    // Ajouter une nouvelle prescription pour un patient
     @PostMapping("/patients/{patientId}/prescriptions")
-    public String createPrescription(@PathVariable Long patientId, @ModelAttribute PrescriptionEntity prescriptionDto) {
-        medicalRecordService.addPrescription(patientId, prescriptionDto);
-        return "redirect:/medical/patients/" + patientId + "/prescriptions";
+    public PrescriptionEntity createPrescription(@PathVariable Long patientId, @RequestBody PrescriptionEntity prescriptionDto) {
+        return medicalRecordService.addPrescription(patientId, prescriptionDto);
     }
 
+    // Récupérer le dossier médical d'un patient
     @GetMapping("/patients/{patientId}/medical-record")
-    public String getMedicalRecord(@PathVariable Long patientId, Model model) {
-        MedicalRecordEntity medicalRecord = medicalRecordService.getMedicalRecord(patientId);
-        model.addAttribute("medicalRecord", medicalRecord);
-        model.addAttribute("patientId", patientId);
-        return "medical-record";
+    public MedicalRecordEntity getMedicalRecord(@PathVariable Long patientId) {
+        return medicalRecordService.getMedicalRecord(patientId);
     }
 
-    @GetMapping("/patients/{patientId}/medical-record/edit")
-    public String showEditMedicalRecordForm(@PathVariable Long patientId, Model model) {
-        MedicalRecordEntity medicalRecord = medicalRecordService.getMedicalRecord(patientId);
-        model.addAttribute("medicalRecord", medicalRecord);
-        model.addAttribute("patientId", patientId);
-        return "edit-medical-record";
-    }
-
-    @PostMapping("/patients/{patientId}/medical-record")
-    public String updateMedicalRecord(@PathVariable Long patientId, @ModelAttribute MedicalRecordEntity medicalRecordDto) {
-        medicalRecordService.updateMedicalRecord(patientId, medicalRecordDto);
-        return "redirect:/medical/patients/" + patientId + "/medical-record";
+    // Mettre à jour le dossier médical d'un patient
+    @PutMapping("/patients/{patientId}/medical-record")
+    public MedicalRecordEntity updateMedicalRecord(@PathVariable Long patientId, @RequestBody MedicalRecordEntity medicalRecordDto) {
+        return medicalRecordService.updateMedicalRecord(patientId, medicalRecordDto);
     }
 }

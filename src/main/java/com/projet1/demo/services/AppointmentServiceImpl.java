@@ -2,7 +2,6 @@ package com.projet1.demo.services;
 
 import com.projet1.demo.entities.AppointmentEntity;
 import com.projet1.demo.repositories.AppointmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

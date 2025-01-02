@@ -28,43 +28,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and() // Permet les requêtes cross-origin
-                .csrf().disable() // Désactive la protection CSRF (utile si vous utilisez JWT ou API REST uniquement)
+                .cors().and()
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll() // Permet l'accès public à SIGN_UP_URL
-                .antMatchers("/users/login", "/register", "/css/**", "/js/**").permitAll() // Permet l'accès aux ressources publiques
-                .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
-                .and()
-                .formLogin()
-                .loginPage("/users/login") // URL de la page de connexion personnalisée
-                .loginProcessingUrl("/users/login") // URL qui traite la soumission du formulaire
-                .defaultSuccessUrl("/users/list", true) // Redirection après une connexion réussie
-                .failureUrl("/users/login?error=true") // Redirection après un échec de la connexion
+                .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
+                .anyRequest().permitAll()
                 .and()
-                .logout()
-                .logoutUrl("/logout") // URL pour déconnecter l'utilisateur
-                .logoutSuccessUrl("/users/login?logout=true") // Redirection après déconnexion
-                .permitAll()
-                .and()
-                .addFilter(getAuthenticationFilter()) // Filtre personnalisé d'authentification
-                .addFilter(new AuthorizationFilter(authenticationManager())) // Filtre d'autorisation
+                .addFilter(getAuthenticationFilter())
+                .addFilter(new AuthorizationFilter(authenticationManager()))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Sessions sans état (utile pour JWT)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     protected AuthenticationFilter getAuthenticationFilter() throws Exception {
-        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
-        filter.setFilterProcessesUrl("/users/login"); // Assurez-vous que l'URL est cohérente
+        final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());// une fois ghadi ideclencha had l filter ghadi ituliser la methode attemptAuthentication
+        filter.setFilterProcessesUrl("/users/login");
         return filter;
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {//la classe li kat3ti ana t cree une instane men wa7ed la personne authentifier
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
-    
+
 }

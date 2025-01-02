@@ -1,7 +1,6 @@
 package com.projet1.demo.services;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,8 +80,8 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public List<UserEntity> getAllUsers() {
-		return (List<UserEntity>) userRepository.findAll();
+	public Iterable<UserEntity> getAllUsers() {
+		return  userRepository.findAll();
 	}
 
 
