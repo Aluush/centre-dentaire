@@ -29,7 +29,7 @@ public class UserController {
    // }
 
     // Créer un nouvel utilisateur
-    @PostMapping
+    @PostMapping("/users")
     public UserDto createUser(@RequestBody UserRequest userRequest) {
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userRequest, userDto);
